@@ -1,24 +1,26 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { nanoid } from 'nanoid';
 import ContactForm from './ContactForm';
 import ContactList from './ContactList';
 import Filter from './Filter';
 import { Box } from './Box';
 import { Container } from './App.styled';
 import {
-  addContact,
   setFilter,
-  deleteContact,
-  getContacts,
   getFilter,
+  useGetContactsQuery,
+  useDeleteContactMutation,
+  useAddContactMutation,
 } from '../redux';
 
 export default function App() {
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
   const filter = useSelector(getFilter);
 
-  const addToContact = ({ name, number }) => {
+  const { data: contacts } = useGetContactsQuery();
+  const [deleteContact] = useDeleteContactMutation();
+  const [addContact] = useAddContactMutation();
+
+  const addToContact = ({ name, number: phone }) => {
     const lowerCasedName = name.toLowerCase();
 
     let added = contacts.find(
@@ -26,9 +28,8 @@ export default function App() {
     );
 
     const contact = {
-      id: nanoid(),
       name,
-      number,
+      phone,
     };
 
     if (added) {
@@ -36,7 +37,7 @@ export default function App() {
       return;
     }
 
-    dispatch(addContact(contact));
+    addContact(contact);
   };
 
   const changeFilter = e => {
@@ -50,31 +51,19 @@ export default function App() {
     );
   };
 
-  const handleDeleteContact = deleteContactId => {
-    dispatch(deleteContact(deleteContactId));
-  };
-
-  const renderCondition = () => {
-    if (contacts.length > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
   return (
     <Box as="main" py={3} width="100%">
       <Container>
         <h2>Phonebook</h2>
         <ContactForm onSubmit={addToContact} />
 
-        {renderCondition() ? (
+        {contacts && contacts.length !== 0 ? (
           <>
             <h2>Contacts</h2>
             <Filter value={filter} onChange={changeFilter} />
             <ContactList
               contacts={filteredContacts()}
-              onDeleteContact={handleDeleteContact}
+              onDeleteContact={deleteContact}
             />
           </>
         ) : (

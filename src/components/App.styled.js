@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   margin: auto;
-  max-width: 300px;
+  max-width: 350px;
   padding: ${props => props.theme.space[3]}px;
   border-radius: ${props => props.theme.radii.normal};
   background-color: ${props => props.theme.colors.cardBackground};

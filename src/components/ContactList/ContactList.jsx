@@ -1,13 +1,13 @@
-import PropTypes from 'prop-types';
 import { List, Contact, Button, ContactData } from './ContactList.styled';
 
 export default function ContactList({ contacts, onDeleteContact }) {
+  console.log(contacts);
   return (
     <List>
-      {contacts.map(({ name, id, number }) => (
+      {contacts.map(({ name, id, phone }) => (
         <Contact key={id}>
           <ContactData>
-            {name}: <span>{number}</span>
+            {name}: <span>{phone}</span>
           </ContactData>
 
           <Button type="button" onClick={() => onDeleteContact(id)}>
@@ -18,14 +18,3 @@ export default function ContactList({ contacts, onDeleteContact }) {
     </List>
   );
 }
-
-ContactList.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ),
-  onDeleteContact: PropTypes.func.isRequired,
-};
